@@ -7,8 +7,8 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 
-from website.models import User, Address, Product, Category, Cart, CartItem, Order
-from website.serializers import UserSerializer, AddressSerializer, ProductSerializer, CategorySerializer, CartSerializer, CartItemSerializer, OrderSerializer
+from models.models import User, Address, Product, Category, Cart, CartItem, Order
+from models.serializers import UserSerializer, AddressSerializer, ProductSerializer, CategorySerializer, CartSerializer, CartItemSerializer, OrderSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
