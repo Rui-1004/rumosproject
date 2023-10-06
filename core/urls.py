@@ -18,7 +18,6 @@ from django.contrib import admin
 from django.urls import path, include
 from . import settings
 from django.conf.urls.static import static
-from api.views import signup_user
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -27,10 +26,10 @@ from rest_framework_simplejwt.views import (
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('api.urls')),
+    #path('api/', include('api.urls')),
     path("__debug__/", include("debug_toolbar.urls")),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/signup/', signup_user, name='signup_user'),
+    #path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    #path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    #path('api/signup/', signup_user, name='signup_user'),
     path('', include('website.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS)

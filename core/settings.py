@@ -27,10 +27,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = '569=-$iwiudg%e@x8c+qsi5%4qy#^xfjcx8y=@x(&4fz*3hu!q'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG")
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'website',
-    'api',
 ]
 
 REST_FRAMEWORK = {
@@ -100,6 +99,8 @@ SIMPLE_JWT = {
 }
 
 AUTH_USER_MODEL = "website.User"
+
+LOGIN_URL = 'login'
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -189,8 +190,8 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')] # durante development
 #STATIC_ROOT = os.path.join(BASE_DIR, 'pasta') --> quando estiver em production, NÃO ESQUECER DE ALTERAR urls.py, o document_root
 
-MEDIA_URL = 'media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+#MEDIA_URL = 'media/'
+#MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

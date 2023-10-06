@@ -10,14 +10,6 @@ class User(AbstractUser):
     date_of_birth = models.DateField(null=True, blank=True)
     
 
-    
-class Address(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses')
-    street = models.CharField(max_length=300)
-    city = models.CharField(max_length=100)
-    postal_code = models.CharField(max_length=25)
-
-
 class Category(models.Model):
     name = models.CharField(max_length=255)
 
@@ -26,33 +18,52 @@ class Category(models.Model):
     
 class Product(models.Model):
     name = models.CharField(max_length=150)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, default=1)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, default=1, null = True, blank = True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField()
-    image = models.ImageField(upload_to='static/uploads/product/', default=os.path.join(BASE_DIR, 'static', 'default.png'))
+    image = models.ImageField(upload_to='static/uploads/product/', default=os.path.join(BASE_DIR, 'static', 'uploads', 'default.png'))
 
     def __str__(self):
         return self.name
 
-class Cart(models.Model):   
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.user.first_name + ' ' + self.user.last_name + '\'s Cart'
-
-class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="cart_items")
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
-
-    def __str__(self):
-        return self.product.name
-
 class Order(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    cart_items = models.ManyToManyField(CartItem)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null = True, blank = True)
     order_date = models.DateTimeField(auto_now_add=True)
+    complete = models.BooleanField(default=False, null=True, blank=False)
+    transaction_id = models.CharField(max_length=150, null=True)
+
+    @property
+    def get_cart_total(self):
+        orderitems = self.orderitem_set.all()
+        total = float(sum([item.get_total for item in orderitems]))
+        return total
+    
+    @property
+    def get_cart_items(self):
+        orderitems = self.orderitem_set.all()
+        total = sum([item.quantity for item in orderitems])
+        return total
+    
+
+class OrderItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null = True, blank = True)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, blank=True, null=True)
+    quantity = models.IntegerField(default=0, null=True, blank=True)
+
+    @property
+    def get_total(self):
+        total = self.product.price * self.quantity
+        return total
+    
+
+class Address(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses', null = True, blank = True)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, blank=True, null=True)
+    street = models.CharField(max_length=300)
+    city = models.CharField(max_length=100)
+    postal_code = models.CharField(max_length=25)
 
     def __str__(self):
-        return self.user.first_name + ' ' + self.user.last_name + ' Order'
+        return self.street
+
+
