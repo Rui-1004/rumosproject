@@ -1,5 +1,10 @@
-django
+Django
 Pillow
 django-debug-toolbar
+setuptools
 python-dotenv
-requests
+asgiref
+sqlparse
+tzdata
+corsheaders
+django-cors-headers
