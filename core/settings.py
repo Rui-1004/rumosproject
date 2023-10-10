@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
 import os
@@ -141,8 +140,6 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')] # durante development
 #STATIC_ROOT = os.path.join(BASE_DIR, 'pasta') --> quando estiver em production, NÃO ESQUECER DE ALTERAR urls.py, o document_root
 
-#MEDIA_URL = 'media/'
-#MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
