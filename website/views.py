@@ -1,3 +1,4 @@
+from random import choice
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
@@ -7,7 +8,7 @@ from django.db.models import Sum
 from .models import *
 import json
 import datetime
-from .forms import SignUpForm
+from .forms import SignUpForm, QuestionForm, AnswerForm, ChallengeAnswerForm
 from .utils import cookieCart, cartData
 
 def home(request):
@@ -143,3 +144,71 @@ def processOrder(request):
         
 
     return JsonResponse('Payment complete', safe=False)
+
+@login_required
+def forum(request):
+    questions = Question.objects.all()
+
+    if request.method == 'POST':
+        form = QuestionForm(request.POST, request.FILES)
+        if form.is_valid():
+            question = form.save(commit=False)
+            question.user = request.user  # Assign the current user to the question
+            question.save()
+            return redirect('forum')  # Redirect to the forum page after successfully creating the question
+    else:
+        form = QuestionForm()
+    
+    return render(request, 'forum.html', {'questions': questions, 'form': form})
+
+@login_required
+def question(request, id):
+    question = Question.objects.get(pk=id)
+    answers = Answer.objects.filter(question=question)
+
+    if request.method == 'POST':
+        form = AnswerForm(request.POST)
+        if form.is_valid():
+            answer = form.save(commit=False)
+            answer.user = request.user  # Assign the current user to the answer
+            answer.question = question
+            answer.save()
+            return redirect('question', id=id)  # Redirect back to the same question page after submitting the answer
+    else:
+        form = AnswerForm()
+
+    return render(request, 'question.html', {'question': question, 'answers': answers, 'form': form})
+
+@login_required
+def challenge(request):
+    current_date = datetime.date.today()
+
+    # Check if a session variable for the selected challenge exists
+    selected_challenge_id = request.session.get('selected_challenge_id')
+
+    # If a session variable is not set or the challenge doesn't match the date, select a challenge
+    if not selected_challenge_id:
+        # Filter challenges for the current date
+        challenges = Challenge.objects.filter(date=current_date)
+
+        if challenges:
+            # Choose a random challenge from the list
+            selected_challenge = choice(challenges)
+            # Store the selected challenge's ID in the session
+            request.session['selected_challenge_id'] = selected_challenge.id
+        else:
+            selected_challenge = None
+    else:
+        try:
+            # Retrieve the challenge from the session variable
+            selected_challenge = Challenge.objects.get(pk=selected_challenge_id)
+        except Challenge.DoesNotExist:
+            selected_challenge = None
+
+    if request.method == 'POST':
+        form = ChallengeAnswerForm(request.POST)
+    else:
+        form = ChallengeAnswerForm()
+
+
+    return render(request, 'challenge.html', {'challenge': selected_challenge, 'form': form})

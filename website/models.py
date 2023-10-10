@@ -18,7 +18,7 @@ class Category(models.Model):
     
 class Product(models.Model):
     name = models.CharField(max_length=150)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, default=1, null = True, blank = True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, default=1, null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField()
     image = models.ImageField(upload_to='static/uploads/product/', default=os.path.join(BASE_DIR, 'static', 'uploads', 'default.png'))
@@ -27,7 +27,7 @@ class Product(models.Model):
         return self.name
 
 class Order(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null = True, blank = True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     order_date = models.DateTimeField(auto_now_add=True)
     complete = models.BooleanField(default=False, null=True, blank=False)
     transaction_id = models.CharField(max_length=150, null=True)
@@ -46,7 +46,7 @@ class Order(models.Model):
     
 
 class OrderItem(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, null = True, blank = True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, blank=True, null=True)
     quantity = models.IntegerField(default=0, null=True, blank=True)
 
@@ -57,7 +57,7 @@ class OrderItem(models.Model):
     
 
 class Address(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses', null = True, blank = True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses', null=True, blank=True)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, blank=True, null=True)
     street = models.CharField(max_length=300)
     city = models.CharField(max_length=100)
@@ -67,3 +67,22 @@ class Address(models.Model):
         return self.street
 
 
+class Question(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    title = models.CharField(max_length= 150)
+    body = models.CharField(max_length= 500)
+    created_at = models.DateTimeField(auto_now_add=True)
+    image = models.ImageField(upload_to='static/uploads/question/', null=True, blank=True)
+
+class Answer(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True, blank=True)
+    body = models.CharField(max_length= 500)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Challenge(models.Model):
+    text = models.CharField(max_length=500)
+    image = models.ImageField(upload_to='static/uploads/challenge/')
+    correct_answer = models.CharField(max_length=255)
+    date = models.DateField(null=True)

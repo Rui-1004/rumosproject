@@ -74,14 +74,14 @@
               <a class="nav-link" href="{% url 'store' %}">Loja Online</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Forum de Perguntas</a>
+              <a class="nav-link" href="{% url 'forum' %}">Forum de Perguntas</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Desafio Diário</a>
+              <a class="nav-link" href="{% url 'challenge' %}">Desafio Diário</a>
             </li>
           </ul>
   
-         
+        
           <a href="{% url 'cart' %}">
             <i class="fa-solid fa-cart-shopping" style="color: #000000;"></i>
           </a>
@@ -114,7 +114,11 @@
         {% endblock %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://kit.fontawesome.com/25b16a9a2a.js" crossorigin="anonymous"></script>
     <script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
   </body>
+
+  
 </html>

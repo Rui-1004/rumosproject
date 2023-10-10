@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from .models import User
+from .models import User, Question, Answer, Challenge
 
 class SignUpForm(UserCreationForm):
 	email = forms.EmailField(label="", widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Email Address'}))
@@ -29,4 +29,43 @@ class SignUpForm(UserCreationForm):
 		self.fields['password2'].widget.attrs['class'] = 'form-control'
 		self.fields['password2'].widget.attrs['placeholder'] = 'Confirm Password'
 		self.fields['password2'].label = ''
-		self.fields['password2'].help_text = '<span class="form-text text-muted"><small>Enter the same password as before, for verification.</small></span>'	
+		self.fields['password2'].help_text = '<span class="form-text text-muted"><small>Enter the same password as before, for verification.</small></span>'
+
+class QuestionForm(forms.ModelForm):
+    class Meta:
+        model = Question
+        fields = ['title', 'body', 'image']
+        
+        labels = {
+        	'title': 'Questão',
+			'body': 'Detalhes',
+            'image': 'Imagem',
+		}
+        
+        widgets = {
+			'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Título', 'rows': 2}),
+			'body': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Texto', 'rows': 5}),
+		}
+
+class AnswerForm(forms.ModelForm):
+    class Meta:
+        model = Answer
+        fields = ['body']
+        
+        labels = {
+			'body': 'Resposta',
+		}
+        
+        widgets = {
+			'body': forms.Textarea(attrs={'class': 'form-control', 'title': 'Resposta', 'placeholder': 'Texto', 'rows': 5}),
+		}
+        
+class ChallengeAnswerForm(forms.Form):
+    user_answer = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Resposta', 'maxlength': '255'})
+    )
+    
+    def clean_user_answer(self):
+        cleaned_data = self.cleaned_data
+        user_answer = cleaned_data.get('user_answer')
+        return user_answer
