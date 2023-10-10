@@ -58,8 +58,16 @@ def store(request):
     data = cartData(request)
     cartItems = data['cartItems']
 
+    category_id = request.GET.get('category')
     products = Product.objects.all()
-    return render(request, 'store.html', {'products' : products, 'cartItems': cartItems})
+
+    if category_id:
+        products = products.filter(category_id=category_id)
+
+    categories = Category.objects.all()
+
+    return render(request, 'store.html', {'products' : products, 'cartItems': cartItems, 'categories': categories})
+
 
 @login_required
 def cart(request):
