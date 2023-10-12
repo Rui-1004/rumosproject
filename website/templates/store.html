@@ -60,7 +60,7 @@
       <option value="{{ category.id }}">{{ category.name }}</option>
     {% endfor %}
   </select>
-  <button type="submit">Filtrar</button>
+  <button class="btn btn-success" type="submit">Filtrar</button>
 </form>
 
 <div class="container-fluid px-4 px-lg-5 mt-5">
@@ -74,9 +74,7 @@
           <div class="text-center">
             <h5 class="fw-bolder">{{product.name}}</h5>
             {{product.price|floatformat:2}}€
-            {% if user.is_authenticated %}
-            <button data-product={{product.id}} data-action="add" class="btn btn-outline-secondary add-btn update-cart"><i class="fa-solid fa-cart-shopping"></i> Adicionar</button>
-            {% endif %}
+            <button data-product={{product.id}} data-action="add" class="btn btn-success add-btn update-cart"><i class="fa-solid fa-cart-shopping"></i> Adicionar</button>
           </div>
         </div>
       </div>

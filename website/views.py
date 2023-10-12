@@ -8,7 +8,7 @@ from .models import *
 import json
 import datetime
 from .forms import SignUpForm, QuestionForm, AnswerForm, ChallengeAnswerForm
-from .utils import cookieCart, cartData
+from .utils import cartData, guestOrder
 
 def home(request):
     return render(request, 'home.html')
@@ -21,10 +21,8 @@ def login_user(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            messages.success(request, "Login concluído!")
             return redirect('home')
         else:
-            messages.success(request, "Não foi possível concluir o login.")
             return redirect('login')
     else:
         return render(request, 'login.html')
@@ -43,7 +41,6 @@ def signup_user(request):
 			password = form.cleaned_data['password1']
 			user = authenticate(request, username=username, password=password)
 			login(request, user)
-			messages.success(request, "Bem-vindo(a)!")
 			return redirect('home')
 	else:
 		form = SignUpForm()
@@ -68,7 +65,7 @@ def store(request):
     return render(request, 'store.html', {'products' : products, 'cartItems': cartItems, 'categories': categories})
 
 
-@login_required
+
 def cart(request):
 
     data = cartData(request)
@@ -78,7 +75,7 @@ def cart(request):
         
     return render(request, 'cart.html', {'items': items, 'order': order, 'cartItems': cartItems})
 
-@login_required
+
 def checkout(request):
 
     data = cartData(request)
@@ -87,6 +84,7 @@ def checkout(request):
     items = data['items']
 
     return render(request, 'checkout.html', {'items': items, 'order': order, 'cartItems': cartItems})
+        
 
 
 def updateItem(request):
@@ -97,9 +95,9 @@ def updateItem(request):
     print('Action:', action)
     print('productId:', productId)
 
-    user = request.user
+    customer = request.user.customer
     product = Product.objects.get(id=productId)
-    order, created = Order.objects.get_or_create(user=user, complete=False)
+    order, created = Order.objects.get_or_create(customer=customer, complete=False)
 
     orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)
 
@@ -121,34 +119,26 @@ def processOrder(request):
     data = json.loads(request.body)
 
     if request.user.is_authenticated:
-        user = request.user
-        order, created = Order.objects.get_or_create(user=user, complete=False)
-        total = float(data['form']['total'])
-        order.transaction_id = transaction_id
+        customer = request.user.customer
+        order, created = Order.objects.get_or_create(customer=customer, complete=False)
 
-        if total == order.get_cart_total:
-            order.complete = True
-        order.save()
+    else:
+        customer, order = guestOrder(request, data)
 
-        Address.objects.create(
-            user = user,
+    Address.objects.create(
+            customer = customer,
             order = order,
             street = data['shipping']['street'],
             city = data['shipping']['city'],
             postal_code = data['shipping']['postal_code'],
         )
 
-    else:
-        print('User is not logged in')
+    total = float(data['form']['total'])
+    order.transaction_id = transaction_id
 
-        print('COOKIES:', request.COOKIES)
-        name = data['form']['username']
-        email = data['form']['password']
-
-        cookieData = cookieCart(request)
-        items = cookieData['items']
-
-        
+    if total == order.get_cart_total:
+        order.complete = True
+    order.save()
 
     return JsonResponse('Payment complete', safe=False)
 
@@ -189,33 +179,24 @@ def question(request, id):
 @login_required
 def challenge(request):
     current_date = datetime.date.today()
+    print("Current Date:", current_date)
 
-    # Check if a session variable for the selected challenge exists
-    selected_challenge_id = request.session.get('selected_challenge_id')
+    # Get challenges with the current date
+    challenges = Challenge.objects.filter(date=current_date)
+    print("Challenges for Today:", challenges)
 
-    # If a session variable is not set or the challenge doesn't match the date, select a challenge
-    if not selected_challenge_id:
-        # Filter challenges for the current date
-        challenges = Challenge.objects.filter(date=current_date)
-
-        if challenges:
-            # Choose a random challenge from the list
-            selected_challenge = choice(challenges)
-            # Store the selected challenge's ID in the session
-            request.session['selected_challenge_id'] = selected_challenge.id
-        else:
-            selected_challenge = None
+    if challenges:
+        # Choose a random challenge from the list
+        selected_challenge = choice(challenges)
+        print("Selected Challenge:", selected_challenge)
+        # Store the selected challenge's ID in the session
+        request.session['selected_challenge_id'] = selected_challenge.id
     else:
-        try:
-            # Retrieve the challenge from the session variable
-            selected_challenge = Challenge.objects.get(pk=selected_challenge_id)
-        except Challenge.DoesNotExist:
-            selected_challenge = None
+        selected_challenge = None
 
     if request.method == 'POST':
         form = ChallengeAnswerForm(request.POST)
     else:
         form = ChallengeAnswerForm()
-
 
     return render(request, 'challenge.html', {'challenge': selected_challenge, 'form': form})
