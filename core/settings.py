@@ -66,9 +66,7 @@ MIDDLEWARE = [
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 
-INTERNAL_IPS = [
-    "127.0.0.1",
-]
+INTERNAL_IPS = []
 
 ROOT_URLCONF = 'core.urls'
 
