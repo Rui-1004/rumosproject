@@ -1,0 +1,16 @@
+.gitignore
+*.pyc
+*.pyo
+*.pyd
+/core/__pycache__
+/website/__pycache__
+/website/migrations/
+*.sqlite3
+*.db
+/static/uploads
+/static/carousel1.jpg
+/static/carousel2.jpg
+/static/carousel3.jpg
+/static/home_img.png
+.venv
+.vscode
