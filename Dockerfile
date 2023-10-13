@@ -37,9 +37,9 @@ COPY . .
 RUN python manage.py migrate
 
 # Create a superuser
-RUN echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'admin@a.com', 'adminpassword123')" | python manage.py shell
+RUN echo "from django.contrib.auth.models import User; User.objects.create_superuser('$SUPERUSER_USERNAME', '$SUPERUSER_EMAIL', '$SUPERUSER_PASSWORD')" | python manage.py shell
 
 # Expose port 80, default HTTP port
 EXPOSE 80
 
-CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:80"]
+CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:80"]   
