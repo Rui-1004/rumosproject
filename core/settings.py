@@ -149,7 +149,7 @@ AZURE_ACCOUNT_KEY = os.environ.get("AZURE_ACCOUNT_KEY", " ")
 AZURE_CONTAINER = os.environ.get("AZURE_CONTAINER", " ")
 
 STATIC_URL = '/static/'
-#STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')] # durante development
+#STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')] # during development
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 
