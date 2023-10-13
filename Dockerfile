@@ -9,12 +9,12 @@ ENV PYTHONDONTWRITEBYTECODE 1
 # These placeholder values will be replaced by the Azure Web App's environment variables set up in its application settings.
 
 # Database build arguments
-ENV DB_ENGINE='dbengine'
-ENV DB_NAME='dbname'
-ENV DB_USER='dbuser'
-ENV DB_PASSWORD='dbpassword'
-ENV DB_HOST='dbhost'
-ENV DB_PORT='dbport'
+ARG DB_ENGINE
+ARG DB_NAME
+ARG DB_USER
+ARG DB_PASSWORD
+ARG DB_HOST
+ARG DB_PORT
 
 # Django settings
 ENV SECRET_KEY="your_secret_key"
@@ -32,6 +32,12 @@ RUN pip install -r requirements.txt
 
 # Copy project
 COPY . .
+
+# Apply database migrations
+RUN python manage.py migrate
+
+# Create a superuser
+RUN echo "from django.contrib.auth.models import User; User.objects.create_superuser('$SUPERUSER_USERNAME', '$SUPERUSER_EMAIL', '$SUPERUSER_PASSWORD')" | python manage.py shell
 
 # Expose port 80, default HTTP port
 EXPOSE 80
