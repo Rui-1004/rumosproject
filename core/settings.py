@@ -33,7 +33,6 @@ DEBUG = os.environ.get('DEBUG')
 
 ALLOWED_HOSTS = [
     'djangoproject.azurewebsites.net',
-    '169.254.129.3',
 ]
 
 
