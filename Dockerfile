@@ -34,6 +34,7 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # Apply database migrations
+RUN python manage.py makemigrations website
 RUN python manage.py migrate
 
 # Create a superuser
@@ -42,4 +43,4 @@ RUN echo "from django.contrib.auth.models import User; User.objects.create_super
 # Expose port 80, default HTTP port
 EXPOSE 80
 
-CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:80"]   
+CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:80"]
