@@ -32,7 +32,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = os.environ.get('DEBUG')
 
 ALLOWED_HOSTS = [
-    'djangoproject.azurewebsites.net'
+    'djangoproject.azurewebsites.net',
+    '169.254.129.3',
 ]
 
 
