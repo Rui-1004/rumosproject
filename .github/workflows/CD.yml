@@ -81,8 +81,8 @@ jobs:
           ENV AZURE_CONTAINER='${{ secrets.AZURE_CONTAINER }}'
 
           # Django settings
-          ENV SECRET_KEY="your_secret_key"
-          ENV DEBUG="your_debug_value"
+          ENV SECRET_KEY='${{ secrets.SECRET_KEY }}'
+          ENV DEBUG='${{ secrets.DEBUG }}'
 
           # Create and set the working directory
           WORKDIR /rumosproject
@@ -107,6 +107,23 @@ jobs:
           CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:80"]
           EOF
         working-directory: ${{ github.workspace }}
+
+      - name: Debug environment variables
+        run: |
+          echo "DB_ENGINE: $DB_ENGINE"
+          echo "DB_NAME: $DB_NAME"
+          echo "DB_USER: $DB_USER"
+          echo "DB_PASSWORD: $DB_PASSWORD"
+          echo "DB_HOST: $DB_HOST"
+          echo "DB_PORT: $DB_PORT"
+          echo "DEFAULT_FILE_STORAGE: $DEFAULT_FILE_STORAGE"
+          echo "AZURE_ACCOUNT_NAME: $AZURE_ACCOUNT_NAME"
+          echo "AZURE_ACCOUNT_KEY: $AZURE_ACCOUNT_KEY"
+          echo "AZURE_CONTAINER: $AZURE_CONTAINER"
+          echo
+          echo
+  env:
+    DB_ENGINE: ${{ secrets.DB_ENGINE }}
 
       - name: Build and push container image to registry
         uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
