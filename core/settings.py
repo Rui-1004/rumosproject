@@ -143,6 +143,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
+DEFAULT_FILE_STORAGE = os.environ.get("DEFAULT_FILE_STORAGE", " ")
+AZURE_ACCOUNT_NAME = os.environ.get("AZURE_ACCOUNT_NAME", " ")
+AZURE_ACCOUNT_KEY = os.environ.get("AZURE_ACCOUNT_KEY", " ")
+AZURE_CONTAINER = os.environ.get("AZURE_CONTAINER", " ")
+
 STATIC_URL = '/static/'
 #STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')] # durante development
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')

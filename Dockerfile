@@ -8,13 +8,19 @@ ENV PYTHONDONTWRITEBYTECODE 1
 # All these next environment variables have placeholder values, that will be replaced when the Docker container is pushed to the Azure Web app.
 # These placeholder values will be replaced by the Azure Web App's environment variables set up in its application settings.
 
-# Database build arguments
-#ARG DB_ENGINE
-#ARG DB_NAME
-#ARG DB_USER
-#ARG DB_PASSWORD
-#ARG DB_HOST
-#ARG DB_PORT
+# Database settings
+ENV DB_ENGINE='dbengine'
+ENV DB_NAME='dbname'
+ENV DB_USER='dbuser'
+ENV DB_PASSWORD='dbpassword'
+ENV DB_HOST='dbhost'
+ENV DB_PORT='dbport'
+
+# Storage settings
+ENV DEFAULT_FILE_STORAGE='defaultfilestorage'
+ENV AZURE_ACCOUNT_NAME='azaccountname'
+ENV AZURE_ACCOUNT_KEY='azaccountkey'
+ENV AZURE_CONTAINER='azcontainer'
 
 # Django settings
 ENV SECRET_KEY="your_secret_key"
@@ -37,8 +43,6 @@ COPY . .
 RUN python manage.py makemigrations website
 RUN python manage.py migrate
 
-# Create a superuser
-#RUN echo "from django.contrib.auth.models import User; User.objects.create_superuser('$SUPERUSER_USERNAME', '$SUPERUSER_EMAIL', '$SUPERUSER_PASSWORD')" | python manage.py shell
 
 # Expose port 80, default HTTP port
 EXPOSE 80

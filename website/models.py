@@ -4,6 +4,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 import os
 from core.settings import BASE_DIR
+from storages.backends.azure_storage import AzureStorage
 
 
 
@@ -46,7 +47,7 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, default=1, null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField()
-    image = models.ImageField(upload_to='static/uploads/product/', default=os.path.join(BASE_DIR, 'static', 'uploads', 'default.png'))
+    image = models.ImageField(upload_to='product/', storage=AzureStorage(), null=True)
 
     def __str__(self):
         return self.name
@@ -106,7 +107,7 @@ class Question(models.Model):
     title = models.CharField(max_length= 150)
     body = models.CharField(max_length= 500)
     created_at = models.DateTimeField(auto_now_add=True)
-    image = models.ImageField(upload_to='static/uploads/question/', null=True, blank=True)
+    image = models.ImageField(upload_to='question/', storage=AzureStorage(), null=True, blank=True)
 
     def __str__(self):
         return str(self.id)
@@ -124,7 +125,7 @@ class Answer(models.Model):
 
 class Challenge(models.Model):
     text = models.CharField(max_length=500)
-    image = models.ImageField(upload_to='static/uploads/challenge/')
+    image = models.ImageField(upload_to='challenge/', storage=AzureStorage(), null=True)
     correct_answer = models.CharField(max_length=255)
     date = models.DateField(null=True)
 
