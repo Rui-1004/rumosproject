@@ -33,6 +33,12 @@ RUN pip install -r requirements.txt
 # Copy project
 COPY . .
 
+# Apply database migrations
+RUN python manage.py migrate
+
+# Create a superuser
+RUN echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'admin@a.com', 'adminpassword123')" | python manage.py shell
+
 # Expose port 80, default HTTP port
 EXPOSE 80
 
