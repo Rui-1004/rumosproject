@@ -56,8 +56,57 @@ jobs:
       - name: Lowercase the repo name and username
         run: echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
 
-      #- name: Set Docker build arguments
-        #run: docker build --build-arg DB_USER=${{ secrets.DB_USER }} --build-arg DB_PASSWORD=${{ secrets.DB_PASSWORD }} --build-arg DB_NAME=${{ secrets.DB_NAME }} --build-arg DB_ENGINE=${{ secrets.DB_ENGINE }} --build-arg DB_HOST=${{ secrets.DB_HOST }} --build-arg DB_PORT=${{ secrets.DB_PORT }} -t djangoproject .
+      - name: Create Dockerfile with secrets
+        run: |
+          cat <<EOF > Dockerfile
+          # Use an official Python runtime as a parent image
+          FROM python:3.11.5
+
+          # Set environment variables for Python
+          ENV PYTHONUNBUFFERED 1
+          ENV PYTHONDONTWRITEBYTECODE 1
+
+          # Database settings
+          ENV DB_ENGINE='${{ secrets.DB_ENGINE }}'
+          ENV DB_NAME='${{ secrets.DB_NAME }}'
+          ENV DB_USER='${{ secrets.DB_USER }}'
+          ENV DB_PASSWORD='${{ secrets.DB_PASSWORD }}'
+          ENV DB_HOST='${{ secrets.DB_HOST }}'
+          ENV DB_PORT='${{ secrets.DB_PORT }}'
+
+          # Storage settings
+          ENV DEFAULT_FILE_STORAGE='${{ secrets.DEFAULT_FILE_STORAGE }}'
+          ENV AZURE_ACCOUNT_NAME='${{ secrets.AZURE_ACCOUNT_NAME }}'
+          ENV AZURE_ACCOUNT_KEY='${{ secrets.AZURE_ACCOUNT_KEY }}'
+          ENV AZURE_CONTAINER='${{ secrets.AZURE_CONTAINER }}'
+
+          # Django settings
+          ENV SECRET_KEY="your_secret_key"
+          ENV DEBUG="your_debug_value"
+
+          # Create and set the working directory
+          WORKDIR /rumosproject
+
+          # Copy the requirements file into the container
+          COPY requirements.txt .
+
+          # Install pip and any needed dependencies in requirements.txt
+          RUN pip install --upgrade pip
+          RUN pip install -r requirements.txt
+
+          # Copy project
+          COPY . .
+
+          # Apply database migrations
+          RUN python manage.py makemigrations website
+          RUN python manage.py migrate
+
+          # Expose port 80, default HTTP port
+          EXPOSE 80
+
+          CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:80"]
+          EOF
+        working-directory: ${{ github.workspace }}
 
       - name: Build and push container image to registry
         uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
