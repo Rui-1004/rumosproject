@@ -9,22 +9,22 @@ ENV PYTHONDONTWRITEBYTECODE 1
 # These placeholder values will be replaced by the Azure Web App's environment variables set up in its application settings.
 
 # Database settings
-ENV DB_ENGINE='dbengine'
-ENV DB_NAME='dbname'
-ENV DB_USER='dbuser'
-ENV DB_PASSWORD='dbpassword'
-ENV DB_HOST='dbhost'
-ENV DB_PORT='dbport'
+#ENV DB_ENGINE='dbengine'
+#ENV DB_NAME='dbname'
+#ENV DB_USER='dbuser'
+#ENV DB_PASSWORD='dbpassword'
+#ENV DB_HOST='dbhost'
+#ENV DB_PORT='dbport'
 
 # Storage settings
-ENV DEFAULT_FILE_STORAGE='defaultfilestorage'
-ENV AZURE_ACCOUNT_NAME='azaccountname'
-ENV AZURE_ACCOUNT_KEY='azaccountkey'
-ENV AZURE_CONTAINER='azcontainer'
+#ENV DEFAULT_FILE_STORAGE='defaultfilestorage'
+#ENV AZURE_ACCOUNT_NAME='azaccountname'
+#ENV AZURE_ACCOUNT_KEY='azaccountkey'
+#ENV AZURE_CONTAINER='azcontainer'
 
 # Django settings
-ENV SECRET_KEY="your_secret_key"
-ENV DEBUG="your_debug_value"
+#ENV SECRET_KEY="your_secret_key"
+#ENV DEBUG="your_debug_value"
 
 # Create and set the working directory
 WORKDIR /rumosproject
@@ -40,8 +40,8 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # Apply database migrations
-RUN python manage.py makemigrations website
-RUN python manage.py migrate
+#RUN python manage.py makemigrations website
+#RUN python manage.py migrate
 
 
 # Expose port 80, default HTTP port
