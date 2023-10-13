@@ -70,9 +70,9 @@ class ProductModelTestCase(TestCase):
 class OrderModelTestCase(TestCase):
     def setUp(self):
         # Create a test user
-        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.customer = Customer.objects.create(name='testname', email='testemail')
         # Create a test order
-        self.order = Order.objects.create(user=self.user, complete=False, transaction_id='12345')
+        self.order = Order.objects.create(customer=self.customer, complete=False, transaction_id='12345')
 
     def test_order_creation(self):
         #Test that orders are created correctly.
@@ -80,7 +80,7 @@ class OrderModelTestCase(TestCase):
 
     def test_order_user_association(self):
         #Test that an order is associated with a user.
-        self.assertEqual(self.order.user, self.user)
+        self.assertEqual(self.order.customer, self.customer)
 
     def test_order_complete_status(self):
         #Test the order's complete status.
@@ -93,7 +93,7 @@ class OrderModelTestCase(TestCase):
 class OrderItemModelTestCase(TestCase):
     def setUp(self):
         # Create a test user
-        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.customer = Customer.objects.create(name='testname', email='testemail')
 
         # Create a test category
         self.category = Category.objects.create(name='Test Category')
@@ -107,7 +107,7 @@ class OrderItemModelTestCase(TestCase):
         )
 
         # Create a test order
-        self.order = Order.objects.create(user=self.user, complete=False, transaction_id='12345')
+        self.order = Order.objects.create(customer=self.customer, complete=False, transaction_id='12345')
 
         # Create a test order item
         self.order_item = OrderItem.objects.create(product=self.product, order=self.order, quantity=2)
@@ -135,11 +135,11 @@ class OrderItemModelTestCase(TestCase):
 class AddressModelTestCase(TestCase):
     def setUp(self):
         # Create a test user
-        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.customer = Customer.objects.create(name='testname', email='testemail')
 
         # Create a test address
         self.address = Address.objects.create(
-            user=self.user,
+            customer=self.customer,
             street='123 Test Street',
             city='Test City',
             postal_code='12345'
@@ -151,7 +151,7 @@ class AddressModelTestCase(TestCase):
 
     def test_address_user_association(self):
         #Test that an address is associated with a user.
-        self.assertEqual(self.address.user, self.user)
+        self.assertEqual(self.address.customer, self.customer)
 
     def test_address_street(self):
         #Test the address street field.
