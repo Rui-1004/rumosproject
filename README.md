@@ -35,6 +35,9 @@ Please check the *website/models.py* file to check the models referenced here (l
 - **Pipelines**:
     Inside the **.github/workflows** directory, there's a CI pipeline and CD pipeline. The CI one is activated whenever a commit is made to the repository, and does tests. the CD pipelines builds a docker container that contains the project and deploys it to an Azure Web App.
 
+- **Tests**:
+    In **website/tests.py**, where basic tests are made and that the CI pipeline runs.
+
 ## How to setup the project to run locally?
 There's a few steps you need to follow in order to setup the project to run locally and test everything for yourself:
 
