@@ -24,11 +24,6 @@ COPY . .
 # Collect static files
 RUN python manage.py collectstatic --noinput
 
-# Apply database migrations
-#RUN python manage.py makemigrations website
-#RUN python manage.py migrate
-
-
 # Expose port 80, default HTTP port
 EXPOSE 80
 
