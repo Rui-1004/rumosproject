@@ -11,3 +11,4 @@ gunicorn==21.2.0
 mysqlclient
 django-storages
 azure-storage-blob
+azure-servicebus

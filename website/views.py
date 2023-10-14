@@ -9,6 +9,8 @@ import json
 import datetime
 from .forms import SignUpForm, QuestionForm, AnswerForm, ChallengeAnswerForm
 from .utils import cartData, guestOrder
+import asyncio
+from .sendmessage import send_single_message
 
 def home(request):
     return render(request, 'home.html')
@@ -139,6 +141,37 @@ def processOrder(request):
     if total == order.get_cart_total:
         order.complete = True
     order.save()
+
+    # Serialize the order items into a list of dictionaries
+    order_items = [
+        {
+            "product_name": item.product.name,
+            "quantity": item.quantity,
+        }
+        for item in OrderItem.objects.filter(order=order)
+    ]
+
+    address = Address.objects.get(order=order)
+
+    # Construct the message content as a dictionary
+    message_content = {
+        "order_id": order.id,
+        "customer_name": order.customer.name,
+        "customer_email": order.customer.email,
+        "order_date": order.order_date.strftime("%Y-%m-%d %H:%M:%S"),
+        "address": {
+            "street": address.street,
+            "city": address.city,
+            "postal_code": address.postal_code,
+        },
+        "order_items": order_items,
+    }
+
+    # Serialize the message content to JSON
+    order_json = json.dumps(message_content)
+
+    asyncio.run(send_single_message(order_json))
+
 
     return JsonResponse('Payment complete', safe=False)
 
