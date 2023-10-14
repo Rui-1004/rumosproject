@@ -95,3 +95,4 @@ This project was set up in a way to build a Docker Container and deploy it to an
     2. Set up all environment variables
     3. Set up the ENV_FILE GitHub secret key in your repository's secret keys, add all the environment variables and their values there, don't include quotation marks (' or ")
     4. Set up the environment variables also in your Azure Web App's application settings.
+    5. Follow the instructions in the CD pipeline and run it.
